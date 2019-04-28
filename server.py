@@ -1,7 +1,11 @@
+import os
+
 import aiohttp
 import itertools
 import socket
 
+import aiohttp_jinja2
+import jinja2
 from aiohttp import web
 
 from services.settings_service import Settings
@@ -10,7 +14,9 @@ from components import auth, dashboard
 
 # init aiohttp server
 app = web.Application()
+
 app['aiohttp_session'] = aiohttp.ClientSession()
+
 try:
     app['settings'] = Settings()
 except BaseException:
@@ -19,6 +25,9 @@ except BaseException:
         'Refer to the settings-example.yaml file for its structure.'
     )
 
+aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('views/templates'))
+app['static_root_url'] = '/static'
+app.router.add_static('/static/', path=os.path.dirname(os.path.abspath(__file__)) + '/views/static', name='static')
 
 # setup associations between routes and appropriate handlers
 routes = [auth.get_routes(), dashboard.get_routes()]

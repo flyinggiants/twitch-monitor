@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Twitch Monitor</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/superhero/bulmaswatch.min.css">
+        <link rel="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css">
+        <!--suppress HtmlUnknownTarget -->
+        <link rel="stylesheet" href="{{ static('custom.css') }}">
+    </head>
+    <body>
+        <section class="section">
+            <iframe frameborder="0"
+                scrolling="no"
+                id="chat_embed"
+                src="https://www.twitch.tv/embed/{{ login }}/chat?darkpopout"
+                style="height: 100%; width: 40%;"
+            ></iframe>
+        </section>
+    </body>
+</html>

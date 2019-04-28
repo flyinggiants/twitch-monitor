@@ -1,0 +1,7 @@
+html, body, section {
+    height: 100%;
+}
+
+body {
+    border-top: #4b367c 5px solid;
+}
