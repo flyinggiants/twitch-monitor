@@ -1,0 +1,3 @@
+# manage your twitch application at https://dev.twitch.tv/console/apps
+twitch_client_id:     '...'
+twitch_client_secret: '...'
