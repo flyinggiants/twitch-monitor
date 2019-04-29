@@ -1,16 +1,18 @@
-import aiohttp
-
-from aiohttp import web
 from aiohttp.web_app import Application
 
+import app_config_key
 from components.auth import auth_refresh
 
 
-def ensure_token(app:Application) -> str:
-    token = app.get('twitch_access_token')
+def ensure_token(app: Application) -> str:
+    token = app.get(app_config_key.TWITCH_ACCESS_TOKEN)
     if not token:
-        raise web.HTTPFound('/auth-start')
+        raise ValueError('No Token available!')
     return token
+
+
+def is_ready(app: Application) -> bool:
+    return app.get(app_config_key.TWITCH_READY) is not None
 
 
 # noinspection PyDefaultArgument
@@ -20,7 +22,7 @@ async def get(path: str, app: Application, params={}, retry=False):
     }
     path = f'https://api.twitch.tv/helix/{path}'
 
-    async with app['aiohttp_session'].post(path, params=params, headers=headers) as resp:
+    async with app[app_config_key.AIOHTTP_SESSION].get(path, params=params, headers=headers) as resp:
         if resp.status == 401:
             if retry:
                 raise ValueError('Twitch-API gave back an Unauthorized error!')

@@ -1,11 +1,9 @@
-from typing import Union, Optional
-
 import yaml
 
 
 class ConfigError(ValueError):
-    def __init__(self, missing_name, key):
-        ValueError.__init__(self, f'A {missing_name} (`{key}`) needs to be defined in settings.yaml!')
+    def __init__(self, key, description):
+        ValueError.__init__(self, f'A {description} (`{key}`) needs to be defined in settings.yaml!')
 
 
 class Settings:
@@ -13,9 +11,9 @@ class Settings:
         with open('settings.yaml') as f:
             self.data = yaml.safe_load(f)
 
-    def _safe_get_string_setting(self, key, missing_name) -> str:
+    def _safe_get_string_setting(self, key, description) -> str:
         if key not in self.data:
-            raise ConfigError(missing_name, key)
+            raise ConfigError(key, description)
 
         return self.data[key]
 
