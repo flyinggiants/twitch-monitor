@@ -40,18 +40,10 @@ class TwitchMonitor:
         app['static_root_url'] = '/static'
         app.router.add_static('/static/', path=os.path.dirname(os.path.abspath(__file__)) + '/views/static', name='static')
 
-        # start listeners
-        api_listener_key = 'api_listener'
-
         async def start_background_tasks(_app):
-            _app[api_listener_key] = _app.loop.create_task(twitch_api_listener.start_loop(_app))
-
-        async def cleanup_background_tasks(_app):
-            _app[api_listener_key].cancel()
-            await _app[api_listener_key]
+            _app.loop.create_task(twitch_api_listener.start_loop(_app))
 
         app.on_startup.append(start_background_tasks)
-        app.on_cleanup.append(cleanup_background_tasks)
 
         # setup associations between routes and appropriate handlers
         routes = [auth.get_routes(), dashboard.get_routes()]

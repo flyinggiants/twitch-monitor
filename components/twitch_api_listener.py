@@ -25,9 +25,6 @@ async def start_loop(app: Application):
     except BaseException as ex:
         logging.error(f'Error at loop of Twitch API Listener. Details: {str(ex)}')
 
-    finally:
-        pass  # no clean up needed
-
 
 async def ping_followers(app: Application):
     # Note: This has a delay of about one minute, but idk what to do against it
