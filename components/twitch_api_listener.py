@@ -23,7 +23,7 @@ async def start_loop(app: Application):
     except asyncio.CancelledError:
         pass
     except BaseException as ex:
-        logging.error(f'Error at loop of Twitch API Listener. Details: {str(ex)}')
+        logging.error(f'{ex.__class__.__name__} at loop of Twitch API Listener. Details: {str(ex)}')
 
 
 async def ping_followers(app: Application):
