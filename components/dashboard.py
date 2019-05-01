@@ -12,7 +12,7 @@ def get_routes():
     ]
 
 
-@aiohttp_jinja2.template('dashboard.html')
+@aiohttp_jinja2.template('dashboard.jinja2')
 async def handle_dashboard(request: Request):
     try:
         twitch_api_service.ensure_token(request.app)

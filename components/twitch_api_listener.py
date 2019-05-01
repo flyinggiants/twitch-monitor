@@ -4,8 +4,8 @@ import logging
 from aiohttp.web_app import Application
 
 import app_config_key
+from components.dashboard_relay import send_activity
 from services import twitch_api_service
-from services.dashboard_relay import send_activity
 
 
 async def start_loop(app: Application):
@@ -47,10 +47,15 @@ async def ping_followers(app: Application):
         current_followers.update({follower_id: follower_name})
 
         if old_followers is not None and follower_id not in old_followers:
-            await send_activity(f'New Follower: {follower_name}')
+            await send_activity(app,
+                app[app_config_key.JINJA_ENV].get_template('activity_follow.jinja2').render(name=follower_name)
+            )
 
     if old_followers is not None:
         for old_follower_id in set(old_followers.keys()).difference(set(current_followers.keys())):
-            await send_activity(f'Lost Follower: {old_followers.get(old_follower_id)}')
+            old_follower_name = old_followers.get(old_follower_id)
+            await send_activity(app,
+                app[app_config_key.JINJA_ENV].get_template('activity_unfollow.jinja2').render(name=old_follower_name)
+            )
 
     app[app_config_key.FOLLOWERS_STORE] = current_followers.copy()
