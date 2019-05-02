@@ -26,8 +26,9 @@
                 vertical-align: top;
             }
 
-            #activity > *:not(:first-child) {
-                opacity: 0.75;
+            #activity {
+                overflow-y: scroll;
+                padding-right: 5px;
             }
 
             #activity .notification {
@@ -40,6 +41,9 @@
                 position: relative;
                 top: -3px;
                 left: 2px;
+            }
+            #activity > .notification:not(:first-child) {
+                opacity: 0.75;
             }
         </style>
     </head>

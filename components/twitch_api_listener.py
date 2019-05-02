@@ -10,7 +10,7 @@ from services import twitch_api_service
 
 async def start_loop(app: Application):
     async def wait_and_recurse():
-        await asyncio.sleep(10)
+        await asyncio.sleep(1)
         await start_loop(app)
 
     try:
@@ -48,14 +48,14 @@ async def ping_followers(app: Application):
 
         if old_followers is not None and follower_id not in old_followers:
             await send_activity(app,
-                app[app_config_key.JINJA_ENV].get_template('activity_follow.jinja2').render(name=follower_name)
+                app[app_config_key.JINJA_ENV].get_template('activity/follow.jinja2').render(name=follower_name)
             )
 
     if old_followers is not None:
         for old_follower_id in set(old_followers.keys()).difference(set(current_followers.keys())):
             old_follower_name = old_followers.get(old_follower_id)
             await send_activity(app,
-                app[app_config_key.JINJA_ENV].get_template('activity_unfollow.jinja2').render(name=old_follower_name)
+                app[app_config_key.JINJA_ENV].get_template('activity/unfollow.jinja2').render(name=old_follower_name)
             )
 
     app[app_config_key.FOLLOWERS_STORE] = current_followers.copy()
