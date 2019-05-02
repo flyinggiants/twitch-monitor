@@ -1,75 +1,65 @@
-<!DOCTYPE html>
-<html lang="en-GB">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Twitch Monitor</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-        <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/darkly/bulmaswatch.min.css">
-        <link rel="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css">
-        <!--suppress HtmlUnknownTarget -->
-        <link rel="stylesheet" href="{{ static('custom.css') }}">
+{%  extends "base.jinja2" %}
 
-        <!--suppress CssUnusedSymbol -->
-        <style>
-            section > * {
-                display: inline-block;
-                height: 100%;
-            }
+{%  block style %}
+    <!--suppress CssUnusedSymbol -->
+    <style>
+        section > * {
+            display: inline-block;
+            height: 100%;
+        }
 
-            section > #chat {
-                width: 40%;
-            }
-            section > #activity {
-                width: 59%;
-                padding-left: 17px;
-                vertical-align: top;
-            }
+        section > #chat {
+            width: 40%;
+        }
+        section > #activity {
+            width: 59%;
+            padding-left: 17px;
+            vertical-align: top;
+        }
 
-            #activity {
-                overflow-y: scroll;
-                padding-right: 5px;
-            }
+        #activity {
+            overflow-y: scroll;
+            padding-right: 5px;
+        }
 
-            #activity .notification {
-                margin-bottom: 7px;
-            }
-            #activity .notification svg {
-                fill: #eaeaea;
-            }
-            #activity .notification span {
-                position: relative;
-                top: -3px;
-                left: 2px;
-            }
-            #activity > .notification:not(:first-child) {
-                opacity: 0.75;
-            }
-        </style>
-    </head>
+        #activity .notification {
+            margin-bottom: 7px;
+        }
+        #activity .notification svg {
+            fill: #eaeaea;
+        }
+        #activity .notification span {
+            position: relative;
+            top: -3px;
+            left: 2px;
+        }
+        #activity > .notification:not(:first-child) {
+            opacity: 0.75;
+        }
+    </style>
+{% endblock %}
 
-    <body>
-        <section class="section">
-            <iframe
-                id="chat"
-                frameborder="0"
-                scrolling="no"
-                src="https://www.twitch.tv/embed/{{ name }}/chat?darkpopout"
-            ></iframe>
+{% block content %}
+    <section class="section">
+        <iframe
+            id="chat"
+            frameborder="0"
+            scrolling="no"
+            src="https://www.twitch.tv/embed/{{ name }}/chat?darkpopout"
+        ></iframe>
 
-            <div id="activity">
-                <span></span>
-            </div>
-        </section>
+        <div id="activity">
+            <span></span>
+        </div>
+    </section>
 
-        <script type="application/javascript">
-            let activityNode = document.getElementById('activity');
-            let activitySocket = new WebSocket("ws://" + window.location.host + "/ws/activity");
-            activitySocket.onmessage = function (event) {
-                let template = document.createElement('div');
-                template.innerHTML = event.data;
-                activityNode.insertBefore(template, activityNode.childNodes[0]);
-            }
-        </script>
-    </body>
-</html>
+    <script type="application/javascript">
+        let activityNode = document.getElementById('activity');
+        let activitySocket = new WebSocket("ws://" + window.location.host + "/ws/activity");
+        activitySocket.onmessage = function (event) {
+            let template = document.createElement('div');
+            template.innerHTML = event.data;
+            activityNode.insertBefore(template, activityNode.childNodes[0]);
+        }
+    </script>
+{% endblock %}

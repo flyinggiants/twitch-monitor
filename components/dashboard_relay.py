@@ -9,6 +9,12 @@ from aiohttp.web_request import Request
 import app_config_key
 from services import twitch_api_service
 
+"""
+This module handles sending updates from the Server to the Web-Site
+"""
+
+
+# First the internal setup:
 
 def get_routes():
     return [
@@ -38,6 +44,8 @@ async def handle_activity_sub(request: Request):
     logging.info('Activity-Web Socket closed')
     return ws
 
+
+# This is called from other modules to send over the updates:
 
 async def send_activity(app: Application, data: str):
     for client in app.get(app_config_key.WEBSOCKET_ACTIVITY_CLIENTS, []):

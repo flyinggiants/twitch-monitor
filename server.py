@@ -9,7 +9,7 @@ import jinja2
 from aiohttp import web
 
 import app_config_key
-from components import auth, dashboard_site, twitch_api_listener, dashboard_relay
+import components
 from services.settings_service import Settings
 
 
@@ -45,14 +45,18 @@ class TwitchMonitor:
             loader=jinja_loader
         )
 
-        # init listener
+        # init listeners
+        listeners = [getattr(component, 'start_loop', None) for component in components.all_components]
+
         async def start_background_tasks(_app):
-            _app.loop.create_task(twitch_api_listener.start_loop(_app))
+            for listen in listeners:
+                if listen is not None:
+                    _app.loop.create_task(listen(_app))
 
         app.on_startup.append(start_background_tasks)
 
         # setup associations between routes and appropriate handlers
-        routes = [auth.get_routes(), dashboard_site.get_routes(), dashboard_relay.get_routes()]
+        routes = [getattr(component, 'get_routes', lambda: [])() for component in components.all_components]
         for path, handler in list(itertools.chain(*routes)):
             app.router.add_get(path, handler)
 

@@ -7,6 +7,12 @@ import app_config_key
 from components.dashboard_relay import send_activity
 from services import twitch_api_service
 
+"""
+This module listens on the Twitch API (i.e. continuously sends requests and checks for changes) to get real-time updates
+"""
+
+
+# Setup:
 
 async def start_loop(app: Application):
     async def wait_and_recurse():
@@ -17,7 +23,10 @@ async def start_loop(app: Application):
         if not twitch_api_service.is_ready(app):
             await wait_and_recurse()
 
-        await ping_followers(app)
+        # add listeners:
+        await listen_for_followers(app)
+
+        # here we go again:
         await wait_and_recurse()
 
     except asyncio.CancelledError:
@@ -26,18 +35,22 @@ async def start_loop(app: Application):
         logging.error(f'{ex.__class__.__name__} at loop of Twitch API Listener. Details: {str(ex)}')
 
 
-async def ping_followers(app: Application):
+# Actual listeners:
+
+async def listen_for_followers(app: Application):
     # Note: This has a delay of about one minute, but idk what to do against it
     #       see https://discuss.dev.twitch.tv/t/how-to-get-followers-in-real-time/9898/2
+
+    # uses https://dev.twitch.tv/docs/api/reference/#get-users-follows
 
     try:
         user_id = app.get(app_config_key.TWITCH_USER_ID, None)
         if not user_id:
-            return  # not ready yet
-        data = await twitch_api_service.get('users/follows', app, {'to_id': user_id})
+            return  # not ready yet, abort
+        data = await twitch_api_service.get(app, 'users/follows', {'to_id': user_id})
     except ValueError as ex:
-        logging.error(f'Error at pinging Followers. Details: {str(ex)}')
-        return
+        logging.error(f'Error at checking Followers. Details: {str(ex)}')
+        return  # error, abort
 
     old_followers = app.get(app_config_key.FOLLOWERS_STORE)
     current_followers = {}

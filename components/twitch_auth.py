@@ -6,6 +6,11 @@ from aiohttp.web_request import Request
 
 import app_config_key
 
+"""
+This module holds everything needed to get authentication from Twitch to access their API
+"""
+
+
 _REDIRECT_URI = parse.quote('http://localhost:8080/auth-done')
 
 
@@ -37,7 +42,7 @@ async def handle_auth_done(request: Request):
         'grant_type': 'authorization_code',
         'redirect_uri': _REDIRECT_URI
     }
-    await _acquire_tokens(params, request.app)
+    await _acquire_tokens(request.app, params)
 
     raise web.HTTPFound('/')  # redirect back to dashboard
 
@@ -47,10 +52,10 @@ async def auth_refresh(app: Application):
         'refresh_token': app[app_config_key.TWITCH_REFRESH_TOKEN],
         'grant_type': 'refresh_token'
     }
-    await _acquire_tokens(params, app)
+    await _acquire_tokens(app, params)
 
 
-async def _acquire_tokens(params: dict, app: Application):
+async def _acquire_tokens(app: Application, params: dict):
     settings = app[app_config_key.SETTINGS]
     aiohttp_session = app[app_config_key.AIOHTTP_SESSION]
 

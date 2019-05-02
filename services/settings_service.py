@@ -1,6 +1,11 @@
 import yaml
 
 
+"""
+This module eases the reading of settings from the settings.yaml file
+"""
+
+
 class ConfigError(ValueError):
     def __init__(self, key, description):
         ValueError.__init__(self, f'A {description} (`{key}`) needs to be defined in settings.yaml!')
