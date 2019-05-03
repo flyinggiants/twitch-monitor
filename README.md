@@ -10,7 +10,7 @@
     - Subscriptions
     - Cheers
     - Donations (*future*, integrating tbd Third-Party)
-- maybe more, how knows?!
+- maybe more, who knows?!
 
 
 ### First-Time Setup
